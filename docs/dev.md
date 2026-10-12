@@ -41,6 +41,23 @@
 另外也需要注意，这里在`protocol`收发消息会经过`dbg`，但是在`dbg`收发不会转发给子插件也就是`protocol`
 
 
+## BootLoader 升级插件（Ymodem 上位机）
+
+配合 APM32E103 BootLoader 升级 APP 固件的内置插件，详细说明（协议规格、架构、界面、
+使用步骤、踩坑记录、故障排查、打包）见 [bootloader_zh.md](./bootloader_zh.md)。
+
+要点概括：
+
+- 上位机是标准 Ymodem（CRC-16）发送方，但升级文件最前面要由上位机补 32 字节固件头
+  （`magic/fw_type/hw_id/version/size/header_crc`），设备会先鉴权再接收，并据此做防降级
+- COMTool 插件接口是全异步的，而 Ymodem 是锁步协议，因此加了一层 `_PortAdapter`
+  把「入队发送 + 接收线程回调」适配成同步阻塞的串口风格接口
+- 设备会把启动 banner 和升级日志以文本形式与协议字节混发，所以协议核心里做了
+  「文本行 / 协议字节」解复用（否则设备文本 `RECOVER OK` 里的 `C` 会被当成邀请）
+- 协议核心（`plugins/bootloader_ymodem.py`）不依赖 Qt，内置设备模拟器，
+  可直接 `python COMTool/plugins/bootloader_ymodem.py` 做无硬件回归
+
+
 
 
 

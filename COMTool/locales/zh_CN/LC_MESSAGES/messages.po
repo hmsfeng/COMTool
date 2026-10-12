@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/Neutree/COMTool/issues\n"
-"POT-Creation-Date: 2025-05-17 11:48+0800\n"
+"POT-Creation-Date: 2026-10-13 01:19+0800\n"
 "PO-Revision-Date: 2021-12-04 15:20+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans_CN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.17.0\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: helpAbout.py:40
 msgid "Config path"
@@ -86,10 +86,13 @@ msgstr "已断开"
 #: main2.py:248 main2.py:298 main2.py:441 main2.py:446 main2.py:789
 #: pluginItems.py:175 pluginItems.py:178 pluginItems.py:286 pluginItems.py:298
 #: plugins/base.py:176 plugins/base.py:181 plugins/base.py:197
-#: plugins/base.py:206 plugins/dbg.py:463 plugins/dbg.py:472 plugins/dbg.py:625
-#: plugins/dbg.py:642 plugins/dbg.py:699 plugins/dbg.py:707
-#: plugins/graph.py:259 plugins/graph_widget_metasenselite.py:591
-#: plugins/graph_widgets.py:167 plugins/myplugin.py:62
+#: plugins/base.py:206 plugins/bootloader.py:696 plugins/bootloader.py:716
+#: plugins/bootloader.py:723 plugins/bootloader.py:727
+#: plugins/bootloader.py:733 plugins/bootloader.py:1061 plugins/dbg.py:463
+#: plugins/dbg.py:472 plugins/dbg.py:625 plugins/dbg.py:648 plugins/dbg.py:705
+#: plugins/dbg.py:713 plugins/graph.py:259
+#: plugins/graph_widget_metasenselite.py:591 plugins/graph_widgets.py:167
+#: plugins/myplugin.py:62
 #: plugins/myplugin2/comtool_plugin_myplugin2/myplugin2.py:70
 #: plugins/protocol.py:472 plugins/protocol.py:499 plugins/protocol.py:508
 #: plugins/protocol.py:571
@@ -105,7 +108,7 @@ msgid "Load plugin fail"
 msgstr "加载插件失败"
 
 #: conn/conn_ssh.py:239 main2.py:292 pluginItems.py:155 pluginItems.py:168
-#: plugins/dbg.py:485 plugins/dbg.py:499
+#: plugins/bootloader.py:1052 plugins/dbg.py:485 plugins/dbg.py:499
 msgid "Select file"
 msgstr "选择文件"
 
@@ -192,7 +195,8 @@ msgstr "不支持加载全局配置，你可以手动拷贝文件到 "
 msgid "Config is not for this plugin, config is for plugin:"
 msgstr "配置不是这个插件的，配置是这个插件的: "
 
-#: pluginItems.py:181 plugins/dbg.py:421 plugins/dbg.py:628
+#: pluginItems.py:181 plugins/bootloader.py:710 plugins/bootloader.py:742
+#: plugins/bootloader.py:1048 plugins/dbg.py:421 plugins/dbg.py:628
 #: plugins/protocol.py:593 plugins/protocol.py:615
 msgid "Warning"
 msgstr "警告"
@@ -267,7 +271,7 @@ msgstr "按键以记录，或点击取消按钮"
 msgid "OK"
 msgstr "完成"
 
-#: widgets.py:688 widgets.py:731
+#: plugins/bootloader.py:852 widgets.py:688 widgets.py:731
 msgid "Cancel"
 msgstr "取消"
 
@@ -350,7 +354,7 @@ msgstr "SSH 公钥"
 msgid "Saved"
 msgstr "已保存"
 
-#: conn/conn_ssh.py:163
+#: conn/conn_ssh.py:163 plugins/bootloader.py:302 plugins/bootloader.py:791
 msgid "File"
 msgstr "文件"
 
@@ -402,7 +406,7 @@ msgstr "模式"
 msgid "Target"
 msgstr "目标"
 
-#: conn/conn_tcp_udp.py:112
+#: conn/conn_tcp_udp.py:112 plugins/bootloader.py:998
 msgid "Local"
 msgstr "本地"
 
@@ -445,6 +449,554 @@ msgstr "格式错误，格式应该应该如 00 01 02 03"
 #: plugins/base.py:206
 msgid "Escape is on, but escape error:"
 msgstr "转移符支持已打开，但是转义时错误"
+
+#: plugins/bootloader.py:50
+msgid ""
+"Waiting for device invitation ('C') ... If the device is not in upgrade "
+"mode yet, press its reset button now."
+msgstr "等待设备邀请 ('C') ... 若设备尚未进入升级模式，请立即按下复位键。"
+
+#: plugins/bootloader.py:52
+msgid "Device invitation received."
+msgstr "已收到设备邀请。"
+
+#: plugins/bootloader.py:53
+msgid ""
+"No invitation received, the device is not in upgrade mode. Please reset "
+"the device and try again."
+msgstr "未收到设备邀请，设备未处于升级模式。请复位下位机后重试。"
+
+#: plugins/bootloader.py:55
+msgid ""
+"The filename packet was not confirmed (timeout). The device erases the "
+"whole backup area first, which takes seconds. If it keeps timing out, "
+"please check that the latest bootloader is flashed into the device."
+msgstr "文件名包未被确认（等待 ACK 超时）。设备收到文件名后会先擦除整片备份区，耗时数秒；若持续超时，请确认下位机已烧写最新 bootloader。"
+
+#: plugins/bootloader.py:58
+msgid ""
+"The filename packet was rejected by the device (NAK). Please check the "
+"firmware file and its size."
+msgstr "文件名包被设备拒绝 (NAK)。请检查固件文件及其大小。"
+
+#: plugins/bootloader.py:60
+msgid "The device aborted the transfer (CAN) while receiving the filename packet."
+msgstr "设备在接收文件名包时中止了传输 (CAN)。"
+
+#: plugins/bootloader.py:61
+#, python-format
+msgid "The filename packet was not confirmed (unexpected status %s)."
+msgstr "文件名包未被确认（收到未知状态 %s）。"
+
+#: plugins/bootloader.py:62
+msgid "Filename accepted. The device is erasing the backup area, please wait ..."
+msgstr "文件名已被接受，设备正在擦除备份区，请稍候 ..."
+
+#: plugins/bootloader.py:63
+msgid "No data invitation received after the filename packet."
+msgstr "文件名包之后没有收到数据邀请。"
+
+#: plugins/bootloader.py:64
+msgid ""
+"The device aborted the transfer (double CAN). The most likely reasons "
+"are: the firmware header was rejected (magic / fw_type / hw_id), or the "
+"version is lower than the APP currently running on the device (anti-"
+"downgrade)."
+msgstr ""
+"设备中止了传输（双 CAN）。最常见原因：固件头鉴权失败（magic / fw_type / hw_id 不匹配），或版本号低于设备当前运行的 "
+"APP（防降级）。"
+
+#: plugins/bootloader.py:67
+#, python-format
+msgid "Packet #%d was not confirmed (%s), retry %d/%d"
+msgstr "第 %d 包未确认 (%s)，重试 %d/%d"
+
+#: plugins/bootloader.py:68
+#, python-format
+msgid "Packet #%d failed, the transfer was aborted."
+msgstr "第 %d 包发送失败，传输已中止。"
+
+#: plugins/bootloader.py:69
+#, python-format
+msgid "The first EOT was not confirmed (%s)."
+msgstr "第一个 EOT 未被确认 (%s)。"
+
+#: plugins/bootloader.py:70
+msgid "No invitation received after the first EOT."
+msgstr "第一个 EOT 之后没有收到邀请。"
+
+#: plugins/bootloader.py:71
+#, python-format
+msgid "The second EOT was not confirmed (%s)."
+msgstr "第二个 EOT 未被确认 (%s)。"
+
+#: plugins/bootloader.py:72
+msgid "No invitation received after the second EOT."
+msgstr "第二个 EOT 之后没有收到邀请。"
+
+#: plugins/bootloader.py:73
+#, python-format
+msgid "The final empty packet was not confirmed (%s)."
+msgstr "结束空包未被确认 (%s)。"
+
+#: plugins/bootloader.py:74
+msgid ""
+"All data sent. Waiting for the device to verify and jump to the new APP "
+"..."
+msgstr "数据已全部发送，等待设备校验并跳转到新 APP ..."
+
+#: plugins/bootloader.py:75
+msgid "Upgrade cancelled by the user, a double CAN was sent to the device."
+msgstr "用户取消升级，已向设备发送双 CAN。"
+
+#: plugins/bootloader.py:76
+#, python-format
+msgid "Serial write failed: %s"
+msgstr "串口写入失败：%s"
+
+#: plugins/bootloader.py:77
+#, python-format
+msgid "Device report: size=%d  crc32=0x%08X"
+msgstr "设备回报：size=%d  crc32=0x%08X"
+
+#: plugins/bootloader.py:78
+msgid "Device reported: UPDATE OK, jumping to APP."
+msgstr "设备回报：UPDATE OK，正在跳转到 APP。"
+
+#: plugins/bootloader.py:79
+#, python-format
+msgid "Device reported an update failure: %s"
+msgstr "设备报告升级失败：%s"
+
+#: plugins/bootloader.py:80
+msgid ""
+"The transfer finished but no final result log was received from the "
+"device."
+msgstr "传输已结束，但未收到设备的最终结果日志。"
+
+#: plugins/bootloader.py:229
+msgid "BootLoader Upgrade"
+msgstr "BootLoader 升级"
+
+#: plugins/bootloader.py:238
+msgid ""
+"Upgrade the APP firmware of a device whose BootLoader supports standard "
+"Ymodem (CRC-16 mode).<br><br>Steps:<br>1. Select the serial port and "
+"115200-8N1 on the left, then click OPEN.<br>2. Choose the raw APP .bin "
+"(the plugin adds the 32-byte firmware header) and fill in the header "
+"parameters.<br>3. Click &quot;Start upgrade&quot;, then press the reset "
+"button of the device when the plugin is waiting for the invitation.<br>4."
+" The plugin compares the size/CRC32 reported by the device with the local"
+" file.<br><br>Note: downgrade is refused by the device, the new version "
+"must not be lower than the APP version currently running."
+msgstr ""
+"给下位机 APP 固件升级（要求 BootLoader 支持标准 Ymodem/CRC-16 模式）。<br><br>操作步骤：<br>1. "
+"在左侧选择串口与 115200-8N1，点击 OPEN 连接；<br>2. 选择裸 APP .bin 文件（插件会自动加上 32 "
+"字节固件头），并填写固件头参数；<br>3. 点击「开始升级」，当插件提示「等待设备邀请」时按下下位机复位键；<br>4. "
+"传输完成后插件会与设备回报的 size/CRC32 做对拍。<br><br>注意：设备禁止降级，新版本号不能低于当前运行 APP 的版本。"
+
+#: plugins/bootloader.py:294 plugins/bootloader.py:448
+msgid "Firmware"
+msgstr "固件"
+
+#: plugins/bootloader.py:300
+msgid "Browse"
+msgstr "浏览"
+
+#: plugins/bootloader.py:311 plugins/bootloader.py:799
+msgid "Packet size"
+msgstr "单包大小"
+
+#: plugins/bootloader.py:316 plugins/bootloader.py:800
+msgid "Timeout(s)"
+msgstr "超时(秒)"
+
+#: plugins/bootloader.py:318
+msgid "Waiting invitation / response"
+msgstr "等待邀请 / 应答"
+
+#: plugins/bootloader.py:320 plugins/bootloader.py:803
+msgid "Slow compatible mode"
+msgstr "低速兼容模式"
+
+#: plugins/bootloader.py:321
+msgid ""
+"Split every frame into blocks with a gap between them. Use it only if "
+"fast sending fails on your board."
+msgstr "把每一帧拆成若干分块并在块间插入间隔。仅当整包快速发送在你的板子上失败时才启用。"
+
+#: plugins/bootloader.py:331
+msgid "Block size(B)"
+msgstr "分块大小(B)"
+
+#: plugins/bootloader.py:333
+msgid "Gap(ms)"
+msgstr "间隔(ms)"
+
+#: plugins/bootloader.py:336
+msgid "Confirm parameters before upgrading"
+msgstr "升级前需确认参数"
+
+#: plugins/bootloader.py:337
+msgid ""
+"Show a confirmation dialog listing the firmware header parameters. When "
+"off, they are still printed into the log area so you can check them "
+"there."
+msgstr "弹出一个确认对话框列出固件头参数。关闭时参数仍会打印到日志区，可在日志里核对。"
+
+#: plugins/bootloader.py:346
+msgid "Firmware header"
+msgstr "固件头"
+
+#: plugins/bootloader.py:352
+msgid "Accepted formats: 0x0101 / 0101 / 257."
+msgstr "可接受的格式：0x0101 / 0101 / 257。"
+
+#: plugins/bootloader.py:353
+msgid ""
+"It is written into the firmware header, and the device uses it to refuse "
+"downgrade."
+msgstr "该值会写入固件头，设备据此做防降级判断。"
+
+#: plugins/bootloader.py:357 plugins/bootloader.py:594
+#: plugins/bootloader.py:798
+msgid "APP version"
+msgstr "APP 版本"
+
+#: plugins/bootloader.py:362 plugins/bootloader.py:371
+msgid "Accepted formats: 0x10 / 010 / 16."
+msgstr "可接受的格式：0x10 / 010 / 16。"
+
+#: plugins/bootloader.py:363
+msgid "Must match FW_TYPE_APP in the device boot_config.h (1 by default)."
+msgstr "必须与下位机 boot_config.h 中的 FW_TYPE_APP 一致（默认为 1）。"
+
+#: plugins/bootloader.py:366 plugins/bootloader.py:595
+#: plugins/bootloader.py:796
+msgid "fw_type"
+msgstr "fw_type"
+
+#: plugins/bootloader.py:372
+msgid "Must match FW_HW_ID in the device boot_config.h (1 by default)."
+msgstr "必须与下位机 boot_config.h 中的 FW_HW_ID 一致（默认为 1）。"
+
+#: plugins/bootloader.py:375 plugins/bootloader.py:596
+#: plugins/bootloader.py:797
+msgid "hw_id"
+msgstr "hw_id"
+
+#: plugins/bootloader.py:379
+msgid "Firmware magic, fixed, defined by the device bootloader"
+msgstr "固件魔术字，由下位机 BootLoader 固定定义"
+
+#: plugins/bootloader.py:380 plugins/bootloader.py:795
+msgid "magic"
+msgstr "魔术字"
+
+#: plugins/bootloader.py:383
+msgid ""
+"fw_type / hw_id must match the device bootloader, otherwise the device "
+"rejects the firmware and erases the backup area in vain."
+msgstr "fw_type / hw_id 必须与下位机 BootLoader 一致，否则设备会拒绝固件并白白擦除一次备份区。"
+
+#: plugins/bootloader.py:403
+msgid "Ready"
+msgstr "就绪"
+
+#: plugins/bootloader.py:420 plugins/bootloader.py:952
+msgid "Start upgrade"
+msgstr "开始升级"
+
+#: plugins/bootloader.py:423
+msgid "Show serial TX/RX data"
+msgstr "显示串口收发数据"
+
+#: plugins/bootloader.py:424
+msgid ""
+"Print every frame sent to and every protocol byte received from the "
+"device into the log area."
+msgstr "把发往设备的每一帧、以及从设备收到的每个协议字节都打印到日志区。"
+
+#: plugins/bootloader.py:430
+msgid "Clear log"
+msgstr "清空日志"
+
+#: plugins/bootloader.py:457
+msgid "Device report"
+msgstr "设备反馈"
+
+#: plugins/bootloader.py:464
+msgid "Export log"
+msgstr "导出日志"
+
+#: plugins/bootloader.py:491
+msgid ""
+"Plugin ready. Select the serial port, open it, then choose a firmware "
+"file."
+msgstr "插件就绪。请选择串口并打开，然后选择固件文件。"
+
+#: plugins/bootloader.py:505
+msgid "Connected."
+msgstr "已连接。"
+
+#: plugins/bootloader.py:507
+msgid "Closed."
+msgstr "已关闭。"
+
+#: plugins/bootloader.py:509
+msgid "Connection lost."
+msgstr "连接丢失。"
+
+#: plugins/bootloader.py:512
+msgid "The connection is down, aborting the upgrade."
+msgstr "连接已断开，中止升级。"
+
+#: plugins/bootloader.py:523
+msgid "Select firmware file"
+msgstr "选择固件文件"
+
+#: plugins/bootloader.py:524
+msgid "Binary file (*.bin);;All Files (*)"
+msgstr "二进制文件 (*.bin);;所有文件 (*)"
+
+#: plugins/bootloader.py:541 plugins/bootloader.py:722
+#: plugins/bootloader.py:723
+msgid "Read file failed:"
+msgstr "读取文件失败："
+
+#: plugins/bootloader.py:545 plugins/bootloader.py:738
+msgid ""
+"Warning: this file already starts with a firmware magic, it may already "
+"contain the header; do NOT select a header-prepended file."
+msgstr "警告：该文件开头已是固件魔术字，可能已经包含固件头；请勿选择已加头的文件。"
+
+#: plugins/bootloader.py:551 plugins/bootloader.py:792
+msgid "Raw bin"
+msgstr "裸 bin"
+
+#: plugins/bootloader.py:552 plugins/bootloader.py:793
+msgid "Upgrade package"
+msgstr "升级包"
+
+#: plugins/bootloader.py:553 plugins/bootloader.py:794
+msgid "Local CRC32"
+msgstr "本地 CRC32"
+
+#: plugins/bootloader.py:554
+msgid "Max allowed"
+msgstr "最大允许"
+
+#: plugins/bootloader.py:604
+msgid "Invalid format:"
+msgstr "格式无效："
+
+#: plugins/bootloader.py:607
+msgid "Parsed:"
+msgstr "已解析："
+
+#: plugins/bootloader.py:683
+msgid "Invalid value:"
+msgstr "无效的数值："
+
+#: plugins/bootloader.py:706
+msgid "Start button clicked, checking parameters ..."
+msgstr "已点击「开始升级」，正在检查参数 ..."
+
+#: plugins/bootloader.py:709
+msgid "Not connected, please open the serial port first."
+msgstr "未连接串口，请先在左侧打开串口。"
+
+#: plugins/bootloader.py:710 plugins/dbg.py:628
+msgid "Connect first please"
+msgstr "请先连接"
+
+#: plugins/bootloader.py:715
+msgid "Firmware file not found:"
+msgstr "固件文件不存在："
+
+#: plugins/bootloader.py:716
+msgid "Please select a valid firmware file (.bin)."
+msgstr "请选择有效的固件文件 (.bin)。"
+
+#: plugins/bootloader.py:726 plugins/bootloader.py:727
+msgid "The firmware file is empty."
+msgstr "固件文件为空。"
+
+#: plugins/bootloader.py:730
+#, python-format
+msgid "Firmware is too large: %d B, the device accepts at most %d B."
+msgstr "固件过大：%d B，设备最多接受 %d B。"
+
+#: plugins/bootloader.py:735
+msgid "Firmware file:"
+msgstr "固件文件："
+
+#: plugins/bootloader.py:743
+msgid ""
+"This file already starts with a firmware magic (it may already contain "
+"the 32-byte header). Continuing will add another header and the device "
+"will reject it.\n"
+"\n"
+"Continue anyway?"
+msgstr ""
+"该文件开头已是固件魔术字（可能已包含 32 字节固件头）。继续会在前面再叠加一个固件头，设备将拒绝该固件。\n"
+"\n"
+"仍要继续？"
+
+#: plugins/bootloader.py:748
+msgid "Cancelled: the file may already contain a firmware header."
+msgstr "已取消：该文件可能已包含固件头。"
+
+#: plugins/bootloader.py:766
+msgid "Parameter format error, upgrade cancelled. Please fix it."
+msgstr "参数格式错误，已取消升级，请修正后重试。"
+
+#: plugins/bootloader.py:772
+msgid "Upgrade parameters:"
+msgstr "本次升级参数："
+
+#: plugins/bootloader.py:777
+msgid "Waiting for your confirmation in the dialog ..."
+msgstr "等待你在对话框中确认 ..."
+
+#: plugins/bootloader.py:779
+msgid "Cancelled in the confirmation dialog."
+msgstr "已在确认对话框中取消。"
+
+#: plugins/bootloader.py:818
+msgid "Cancelling, waiting for the current step to finish safely ..."
+msgstr "正在取消，等待当前步骤安全结束 ..."
+
+#: plugins/bootloader.py:827
+msgid "Confirm upgrade"
+msgstr "确认升级"
+
+#: plugins/bootloader.py:828
+msgid "Please confirm the firmware header parameters before upgrading:"
+msgstr "升级前请确认固件头参数："
+
+#: plugins/bootloader.py:832
+msgid "Do not ask again"
+msgstr "不再提示"
+
+#: plugins/bootloader.py:851
+msgid "Starting ..."
+msgstr "正在启动 ..."
+
+#: plugins/bootloader.py:855
+msgid "Start upgrade:"
+msgstr "开始升级"
+
+#: plugins/bootloader.py:944
+msgid "ETA"
+msgstr "剩余"
+
+#: plugins/bootloader.py:960 plugins/bootloader.py:961
+msgid "Upgrade cancelled."
+msgstr "升级已取消。"
+
+#: plugins/bootloader.py:965 plugins/bootloader.py:966
+msgid "Upgrade succeeded."
+msgstr "升级成功。"
+
+#: plugins/bootloader.py:968 plugins/bootloader.py:969
+msgid "Upgrade failed."
+msgstr "升级失败。"
+
+#: plugins/bootloader.py:971 plugins/bootloader.py:972
+msgid "Transfer finished, result unknown."
+msgstr "传输已结束，结果未知。"
+
+#: plugins/bootloader.py:983 plugins/bootloader.py:986
+msgid "size"
+msgstr "长度"
+
+#: plugins/bootloader.py:988 plugins/bootloader.py:991
+msgid "crc32"
+msgstr "crc32"
+
+#: plugins/bootloader.py:993 plugins/bootloader.py:995
+#: plugins/bootloader.py:997
+msgid "Result"
+msgstr "结果"
+
+#: plugins/bootloader.py:995
+msgid "UPDATE OK"
+msgstr "UPDATE OK"
+
+#: plugins/bootloader.py:997
+msgid "unknown"
+msgstr "未知"
+
+#: plugins/bootloader.py:1002
+msgid "Elapsed"
+msgstr "耗时"
+
+#: plugins/bootloader.py:1002
+msgid "Retries"
+msgstr "重传次数"
+
+#: plugins/bootloader.py:1007
+msgid ""
+"The device rejected the firmware header at the first packet. Check "
+"fw_type/hw_id/version (anti-downgrade) and make sure the device uses the "
+"same bootloader configuration."
+msgstr "设备在首包就拒绝了固件头。请检查 fw_type / hw_id / version（防降级），并确认下位机 BootLoader 配置一致。"
+
+#: plugins/bootloader.py:1014
+#, python-format
+msgid "The device received all data but failed to apply it: %s"
+msgstr "设备已收完数据，但写入/校验失败：%s"
+
+#: plugins/bootloader.py:1018
+#, python-format
+msgid "CRC32 mismatch: device=0x%08X local=0x%08X"
+msgstr "CRC32 不一致：设备=0x%08X 本地=0x%08X"
+
+#: plugins/bootloader.py:1022
+#, python-format
+msgid "Size mismatch: device=%d local=%d"
+msgstr "长度不一致：设备=%d 本地=%d"
+
+#: plugins/bootloader.py:1048
+msgid "Nothing to export."
+msgstr "没有可导出的内容。"
+
+#: plugins/bootloader.py:1053
+msgid "Log file (*.log);;All Files (*)"
+msgstr "日志文件 (*.log);;所有文件 (*)"
+
+#: plugins/bootloader.py:1059
+msgid "Log saved to:"
+msgstr "日志已保存到："
+
+#: plugins/bootloader.py:1061
+msgid "Save file failed:"
+msgstr "保存文件失败："
+
+#: plugins/bootloader.py:1066
+msgid "Waiting for device invitation ..."
+msgstr "等待设备邀请 ..."
+
+#: plugins/bootloader.py:1067
+msgid "Sending filename packet ..."
+msgstr "正在发送文件名包 ..."
+
+#: plugins/bootloader.py:1068
+msgid "Device is erasing the backup area ..."
+msgstr "设备正在擦除备份区 ..."
+
+#: plugins/bootloader.py:1069
+msgid "Transferring ..."
+msgstr "传输中 ..."
+
+#: plugins/bootloader.py:1070
+msgid "Verifying, waiting for device result ..."
+msgstr "校验中，等待设备结果 ..."
+
+#: plugins/bootloader.py:1071
+msgid "Done"
+msgstr "完成"
 
 #: plugins/dbg.py:51
 msgid "Send Receive"
@@ -659,23 +1211,19 @@ msgstr ""
 "文件路径错误\n"
 "路径"
 
-#: plugins/dbg.py:628
-msgid "Connect first please"
-msgstr "请先连接"
-
 #: plugins/dbg.py:631
 msgid "Sending file"
 msgstr "发送文件中"
 
-#: plugins/dbg.py:642
+#: plugins/dbg.py:648
 msgid "Time format error"
 msgstr "时间格式错误"
 
-#: plugins/dbg.py:699
+#: plugins/dbg.py:705
 msgid "Send Error"
 msgstr "发送出错"
 
-#: plugins/dbg.py:707
+#: plugins/dbg.py:713
 msgid "get data error"
 msgstr "获取数据错误"
 
@@ -997,4 +1545,7 @@ msgstr "我的插件2"
 
 #~ msgid "Sendding File"
 #~ msgstr "发送文件中"
+
+#~ msgid "Show protocol detail"
+#~ msgstr "显示协议细节"
 
