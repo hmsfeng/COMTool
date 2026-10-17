@@ -23,7 +23,7 @@ import time
 import zlib
 from datetime import datetime
 
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QTextCursor
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
                              QPushButton, QCheckBox, QLineEdit, QGroupBox, QFileDialog,
@@ -232,6 +232,7 @@ class Plugin(Plugin_Base):
     devTextSignal = pyqtSignal(str)              # 设备日志文本行
     protoSignal = pyqtSignal(int)                # 收到的协议字节
     txSignal = pyqtSignal(object)                # 发出的整帧（bytes，帧级一次）
+    monitorSignal = pyqtSignal(object)           # 未升级时串口收到的原始字节（监视模式）
     progressSignal = pyqtSignal(float, str, object)   # fraction, phase code, args
     doneSignal = pyqtSignal(object)              # YmodemResult
 
@@ -257,6 +258,9 @@ class Plugin(Plugin_Base):
         self._local = {}
         self._lastProgress = (0.0, 0.0)   # sent, timestamp
         self._parseErrors = []            # 输入解析错误，攒够一次再提示
+        # 监视模式：未升级时把串口收到的数据按行显示出来
+        self._monBuf = bytearray()
+        self._monTimer = None
         # widgets
         self.filePathInput = None
         self.packetCombo = None
@@ -438,6 +442,13 @@ class Plugin(Plugin_Base):
         self.logArea.setMaximumBlockCount(5000)
         self.logArea.setLineWrapMode(QPlainTextEdit.NoWrap)
         layout.addWidget(self.logArea, 1)
+
+        # 监视模式的空闲刷出定时器：设备只发 'C' 之类的短数据没有换行时，
+        # 200ms 内没有新数据就先把已经收到的部分刷出来，避免"看着像没收到"。
+        self._monTimer = QTimer(self)
+        self._monTimer.setSingleShot(True)
+        self._monTimer.setInterval(200)
+        self._monTimer.timeout.connect(self.onMonitorFlush)
         return widget
 
     def onWidgetFunctional(self, parent):
@@ -479,6 +490,7 @@ class Plugin(Plugin_Base):
         self.devTextSignal.connect(self.onDeviceText)
         self.protoSignal.connect(self.onProto)
         self.txSignal.connect(self.onTxFrame)
+        self.monitorSignal.connect(self.onMonitorData)
         self.progressSignal.connect(self.onProgress)
         self.doneSignal.connect(self.onDone)
         # 启动时只做静默归一化：历史配置里的写法差异不该弹错误框
@@ -492,6 +504,7 @@ class Plugin(Plugin_Base):
 
     def onDel(self):
         self._stopEvent.set()
+        self._resetMonitor()
         if self._port is not None:
             self._port.close()
         if self._worker is not None and self._worker.is_alive():
@@ -502,8 +515,11 @@ class Plugin(Plugin_Base):
     def onConnChanged(self, status, msg):
         super().onConnChanged(status, msg)
         if status == ConnectionStatus.CONNECTED:
+            self._resetMonitor()
             self.onLog("info", _("Connected."))
+            self.onLog("info", _("Monitoring serial data. Received bytes will be shown below."))
         elif status == ConnectionStatus.CLOSED:
+            self._resetMonitor()
             self.onLog("info", _("Closed."))
         elif status == ConnectionStatus.LOSE:
             self.onLog("warning", _("Connection lost."))
@@ -515,7 +531,49 @@ class Plugin(Plugin_Base):
     def onReceived(self, data):
         port = self._port
         if port is not None:
+            # 升级进行中：交给 Ymodem 协议层解析
             port.feed(data)
+            return
+        # 空闲（未升级）：进入监视模式，原样显示收到的数据
+        self.monitorSignal.emit(bytes(data))
+
+    # ---------------- 监视模式（打开串口后一直显示收到的数据） ----------------
+    def onMonitorData(self, data):
+        """把串口收到的字节按行整理后写入日志区（UI 线程）。"""
+        if self._running or data is None:
+            return
+        self._monBuf.extend(data)
+        self._flushMonitor(partial=False)
+        if len(self._monBuf) > 1024:      # 防御：长时间无换行的数据也别无限攒着
+            self._flushMonitor(partial=True)
+        if self._monTimer is not None:
+            self._monTimer.start()
+
+    def onMonitorFlush(self):
+        """空闲 200ms：把还没换行的残留数据先刷出来。"""
+        if not self._running:
+            self._flushMonitor(partial=True)
+
+    def _flushMonitor(self, partial):
+        while True:
+            idx = self._monBuf.find(b"\n")
+            if idx < 0:
+                break
+            raw = bytes(self._monBuf[:idx])
+            del self._monBuf[:idx + 1]
+            line = _fmt_monitor_line(raw)
+            if line.strip():
+                self._appendLog("[MON] %s" % line)
+        if partial and self._monBuf:
+            line = _fmt_monitor_line(bytes(self._monBuf))
+            del self._monBuf[:]
+            if line.strip():
+                self._appendLog("[MON] %s" % line)
+
+    def _resetMonitor(self):
+        del self._monBuf[:]
+        if self._monTimer is not None:
+            self._monTimer.stop()
 
     # ---------------- 参数输入 ----------------
     def onBrowseFile(self):
@@ -841,6 +899,8 @@ class Plugin(Plugin_Base):
         return ret == QMessageBox.Ok
 
     def _begin(self, params):
+        # 进入升级流程：停止监视模式，之后的收发由 Ymodem 协议层负责显示
+        self._resetMonitor()
         self._running = True
         self._stopEvent = threading.Event()
         self._t0 = time.monotonic()
@@ -949,6 +1009,7 @@ class Plugin(Plugin_Base):
 
     def onDone(self, result):
         self._running = False
+        self._resetMonitor()
         self.startButton.setText(_("Start upgrade"))
         self.startButton.setEnabled(True)
         if self._port is not None:
@@ -1087,6 +1148,33 @@ def _log_text(code, args):
         return template % args
     except Exception:
         return "%s %r" % (template, args)
+
+
+_MONITOR_LINE_MAX = 200
+
+
+def _fmt_monitor_line(raw):
+    """把监视模式下收到的一行原始字节渲染成可读文本。
+
+    - 按 UTF-8 解码（失败用替换符），保证中文日志正常显示；
+    - 丢弃 '\\r'（否则日志行会被回车覆盖），保留 '\\t'；
+    - 其余不可打印控制字符（如 ACK 0x06）转成 <06> 形式，便于判断确实有数据到达；
+    - 超长行截断（设备强制升级时会持续发 'C'，不截断会产生上千字符的日志行）。
+    """
+    text = bytes(raw).decode("utf-8", errors="replace")
+    out = []
+    for ch in text:
+        o = ord(ch)
+        if ch == "\r":
+            continue
+        if ch == "\n" or ch == "\t" or 0x20 <= o < 0x7F or o >= 0xA0:
+            out.append(ch)
+        else:
+            out.append("<%02X>" % o)
+    line = "".join(out)
+    if len(line) > _MONITOR_LINE_MAX:
+        line = line[:_MONITOR_LINE_MAX] + " ... (%d chars)" % len(line)
+    return line
 
 
 def _fmt_hex_dec(value):
